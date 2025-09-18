@@ -6,17 +6,21 @@
   "type": "module",
   "scripts": {
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "config": "node config.js",
+    "config:dev": "node -r dotenv/config config.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@vitest/coverage-v8": "^3.2.4",
-    "vitest": "^3.2.4"
-  },
   "dependencies": {
     "date-fns": "^4.1.0",
     "luxon": "^3.7.2"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
+    "dotenv": "^16.4.5",
+    "vitest": "^3.2.4"
   }
 }
