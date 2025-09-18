@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import { DateTime } from "luxon";
 import {
     addYears, addMonths, addWeeks, addDays,
     addHours, addMinutes, addSeconds, endOfDay,
@@ -67,88 +66,76 @@ export function getDateTimeInfo(date, timezone = null) {
 }
 
 //---------------------------------------------------------------------------------
-
-function toLocalIfDateOnly(input) {
+export function parseDate(input) {
     if (typeof input === "string" && /^\d{4}-\d{2}-\d{2}$/.test(input)) {
         const [y, m, d] = input.split("-").map(Number);
-        return new Date(y, m - 1, d, 0, 0, 0, 0);
+        return new Date(y, m - 1, d);
     }
-    const d = new Date(input);
-    if (Number.isNaN(d.getTime())) throw new Error("Invalid date input");
-    return d;
+    return new Date(input);
     }
 
-    function alignHalfDayLocal(d) {
-    const s = startOfDay(d);
-    const diffMs = d.getTime() - s.getTime();
-    const twelve = 12 * 3600 * 1000;
-    if (diffMs <= 0) return s;
-    if (diffMs <= twelve) return new Date(s.getTime() + twelve);
-    return addDays(s, 1);
-    }
-    const stepHalfDayLocal = (d) => addHours(d, 12);
-
-    export function enumerateByInterval(startDate, endDate, interval = "day") {
-    const fromRaw = toLocalIfDateOnly(startDate);
-    const toRaw   = toLocalIfDateOnly(endDate);
-    if (toRaw < fromRaw) throw new Error("End date must be >= start date");
-
-    const dateLevel = new Set(["year","month","week","day"]);
-    const key = String(interval).toLowerCase();
-    const from = dateLevel.has(key) ? startOfDay(fromRaw) : fromRaw;
-    const to   = dateLevel.has(key) ? endOfDay(toRaw)   : toRaw;
-
-    const WEEK_START = 0;
-
-    const aligners = {
-        "year":     (d) => startOfYear(d),
-        "month":    (d) => startOfMonth(d),
-        "week":     (d) => startOfWeek(startOfDay(d), { weekStartsOn: WEEK_START }),
-        "day":      (d) => startOfDay(d),
-        "half-day": (d) => alignHalfDayLocal(d),
-        "hour":     (d) => startOfHour(d),
-        "minute":   (d) => startOfMinute(d),
-        "second":   (d) => startOfSecond(d),
+    const intervals = {
+    'second': 1000,
+    'minute': 60 * 1000,
+    'hour': 60 * 60 * 1000,
+    'half-day': 12 * 60 * 60 * 1000,
+    'day': 24 * 60 * 60 * 1000
     };
 
-    const steppers = {
-        "year":     (d) => addYears(d, 1),
-        "month":    (d) => addMonths(d, 1),
-        "week":     (d) => addWeeks(d, 1),
-        "day":      (d) => addDays(d, 1),
-        "half-day": (d) => stepHalfDayLocal(d),
-        "hour":     (d) => addHours(d, 1),
-        "minute":   (d) => addMinutes(d, 1),
-        "second":   (d) => addSeconds(d, 1),
-    };
+export function enumerateByInterval(startDate, endDate, interval = "day") {
+    const start = parseDate(startDate);
+    const end = parseDate(endDate);
 
-    const align = aligners[key];
-    const step  = steppers[key];
-    if (!align || !step) throw new Error(`Unsupported interval "${interval}"`);
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        throw new Error("Invalid date input");
+    }
+    if (end < start) {
+        throw new Error("End date must be >= start date");
+    }
+    
+    const dates = [];
+    const current = new Date(start);
+    if (interval === 'week') {
+        const startOfWeek = new Date(current);
+        startOfWeek.setDate(current.getDate() - current.getDay());
+        startOfWeek.setHours(0, 0, 0, 0);
 
-    let cur = align(from);
-
-    if (key === "week") {
-        const out = [];
-        while (cur < startOfDay(fromRaw)) cur = step(cur);
-        while (cur <= to) {
-        out.push(new Date(cur));
-        cur = step(cur);
+        const currentWeek = new Date(startOfWeek);
+        while (currentWeek <= end) {
+            if (currentWeek >= start) {
+                dates.push(new Date(currentWeek));
         }
-        return out;
+        currentWeek.setDate(currentWeek.getDate() + 7);
+        }
+    return dates;
     }
 
-    while (cur < from) cur = step(cur);
-    const out = [];
-    while (cur <= to) {
-        out.push(new Date(cur));
-        cur = step(cur);
+    if (interval === 'month') {
+        while (current <= end) {
+            dates.push(new Date(current));
+            current.setMonth(current.getMonth() + 1);
+        }
+    return dates;
     }
 
-    const last = out[out.length - 1];
-    if (!last || last.getTime() !== toRaw.getTime()) {
-        out.push(new Date(toRaw));
+    if (interval === 'year') {
+        while (current <= end) {
+            dates.push(new Date(current));
+            current.setFullYear(current.getFullYear() + 1);
+        }
+        return dates;
     }
+    
 
-    return out;
+    const intervalMs = intervals[interval];
+    if (!intervalMs) {
+        throw new Error(`Unsupported interval "${interval}"`);
+    }
+    
+    while (current <= end) {
+        dates.push(new Date(current));
+        current.setTime(current.getTime() + intervalMs);
+    }
+    
+    return dates;
 }
