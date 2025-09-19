@@ -1,4 +1,7 @@
-export function getConfig() {
+import { pathToFileURL } from "url";
+e
+
+xport function getConfig() {
     const name = process.env.name ?? process.env.NAME ?? "";
     const env = process.env.env ?? process.env.ENV ?? "";
     const portRaw = process.env.port ?? process.env.PORT;
@@ -18,7 +21,7 @@ function printConfig() {
     console.log(`[${now}]`, getConfig());
 }
 
-import { pathToFileURL } from "url";
+//not necessarily relevant
 const isDirectRun = import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isDirectRun) {
