@@ -17,6 +17,8 @@ describe('formatDateRange', () => {
         const result = formatDateRange('2025-01-01', '2025-12-31', 'fullDate')
         expect(result).toBe('01 Jan 2025 - 31 Dec 2025')
     })
+
+    //טקסט של ה קורה שאני שולחת משהו שלא תאריך
 })
 
 // Tests B
@@ -65,4 +67,5 @@ describe('enumerateByInterval', () => {
         expect(result[1].getHours()).toBe(1)
         expect(result[2].getHours()).toBe(2)
     })
+    //להוסיף את הטקסט המלא 
 })

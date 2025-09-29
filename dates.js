@@ -67,15 +67,17 @@ export function getDateTimeInfo(date, timezone = null) {
 }
 
 //---------------------------------------------------------------------------------
+//to remove to pri3nt only date without time
 export function parseDate(input) {
     if (typeof input === "string" && /^\d{4}-\d{2}-\d{2}$/.test(input)) {
         const [y, m, d] = input.split("-").map(Number);
         return new Date(y, m - 1, d);
     }
     return new Date(input);
-    }
+}
 
-    const intervals = {
+//export
+    export const intervals = {
     'second': 1000,
     'minute': 60 * 1000,
     'hour': 60 * 60 * 1000,
@@ -87,7 +89,7 @@ export function enumerateByInterval(startDate, endDate, interval = "day") {
     const start = parseDate(startDate);
     const end = parseDate(endDate);
 
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    if (isNaN(start) || isNaN(end.getTime())) {
         throw new Error("Invalid date input");
     }
     if (end < start) {

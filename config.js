@@ -1,5 +1,7 @@
 import { pathToFileURL } from "url";
 
+//dotenv module
+
 export function getConfig() {
     const name = process.env.name ?? process.env.NAME ?? "";
     const env = process.env.env ?? process.env.ENV ?? "";
