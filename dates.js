@@ -67,27 +67,94 @@ export function getDateTimeInfo(date, timezone = null) {
 }
 
 //---------------------------------------------------------------------------------
-//to remove to pri3nt only date without time
-export function parseDate(input) {
-    if (typeof input === "string" && /^\d{4}-\d{2}-\d{2}$/.test(input)) {
-        const [y, m, d] = input.split("-").map(Number);
-        return new Date(y, m - 1, d);
-    }
-    return new Date(input);
-}
+// //to remove to pri3nt only date without time
+// export function parseDate(input) {
+//     if (typeof input === "string" && /^\d{4}-\d{2}-\d{2}$/.test(input)) {
+//         const [y, m, d] = input.split("-").map(Number);
+//         return new Date(y, m - 1, d);
+//     }
+//     return new Date(input);
+// }
 
-//export
-    export const intervals = {
+// //export
+//     export const intervals = {
+//     'second': 1000,
+//     'minute': 60 * 1000,
+//     'hour': 60 * 60 * 1000,
+//     'half-day': 12 * 60 * 60 * 1000,
+//     'day': 24 * 60 * 60 * 1000
+//     };
+
+// export function enumerateByInterval(startDate, endDate, interval = "day") {
+//     const start = parseDate(startDate);
+//     const end = parseDate(endDate);
+
+//     if (isNaN(start) || isNaN(end.getTime())) {
+//         throw new Error("Invalid date input");
+//     }
+//     if (end < start) {
+//         throw new Error("End date must be >= start date");
+//     }
+    
+//     const dates = [];
+//     const current = new Date(start);
+//     if (interval === 'week') {
+//         const startOfWeek = new Date(current);
+//         startOfWeek.setDate(current.getDate() - current.getDay());
+//         startOfWeek.setHours(0, 0, 0, 0);
+
+//         const currentWeek = new Date(startOfWeek);
+//         while (currentWeek <= end) {
+//             if (currentWeek >= start) {
+//                 dates.push(new Date(currentWeek));
+//         }
+//         currentWeek.setDate(currentWeek.getDate() + 7);
+//         }
+//     return dates;
+//     }
+
+//     if (interval === 'month') {
+//         while (current <= end) {
+//             dates.push(new Date(current));
+//             current.setMonth(current.getMonth() + 1);
+//         }
+//     return dates;
+//     }
+
+//     if (interval === 'year') {
+//         while (current <= end) {
+//             dates.push(new Date(current));
+//             current.setFullYear(current.getFullYear() + 1);
+//         }
+//         return dates;
+//     }
+    
+
+//     const intervalMs = intervals[interval];
+//     if (!intervalMs) {
+//         throw new Error(`Unsupported interval "${interval}"`);
+//     }
+    
+//     while (current <= end) {
+//         dates.push(new Date(current));
+//         current.setTime(current.getTime() + intervalMs);
+//     }
+    
+//     return dates;
+// }
+
+export const intervals = {
     'second': 1000,
     'minute': 60 * 1000,
     'hour': 60 * 60 * 1000,
     'half-day': 12 * 60 * 60 * 1000,
     'day': 24 * 60 * 60 * 1000
-    };
+};
 
 export function enumerateByInterval(startDate, endDate, interval = "day") {
-    const start = parseDate(startDate);
-    const end = parseDate(endDate);
+    // במקום parseDate: שימוש ישיר ב-new Date
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
     if (isNaN(start) || isNaN(end.getTime())) {
         throw new Error("Invalid date input");
@@ -98,6 +165,7 @@ export function enumerateByInterval(startDate, endDate, interval = "day") {
     
     const dates = [];
     const current = new Date(start);
+
     if (interval === 'week') {
         const startOfWeek = new Date(current);
         startOfWeek.setDate(current.getDate() - current.getDay());
@@ -107,10 +175,10 @@ export function enumerateByInterval(startDate, endDate, interval = "day") {
         while (currentWeek <= end) {
             if (currentWeek >= start) {
                 dates.push(new Date(currentWeek));
+            }
+            currentWeek.setDate(currentWeek.getDate() + 7);
         }
-        currentWeek.setDate(currentWeek.getDate() + 7);
-        }
-    return dates;
+        return dates;
     }
 
     if (interval === 'month') {
@@ -118,7 +186,7 @@ export function enumerateByInterval(startDate, endDate, interval = "day") {
             dates.push(new Date(current));
             current.setMonth(current.getMonth() + 1);
         }
-    return dates;
+        return dates;
     }
 
     if (interval === 'year') {
@@ -129,7 +197,6 @@ export function enumerateByInterval(startDate, endDate, interval = "day") {
         return dates;
     }
     
-
     const intervalMs = intervals[interval];
     if (!intervalMs) {
         throw new Error(`Unsupported interval "${interval}"`);
