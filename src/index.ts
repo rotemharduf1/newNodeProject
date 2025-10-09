@@ -6,6 +6,8 @@
     enumerateByInterval,
     } from './dates.js'
     import { scheduler } from "./scheduler.js";
+    import { Queue } from "./queue.js";
+
 
 
     // if (import.meta.main) {
@@ -33,15 +35,29 @@
 
     // src/index.ts
 
-    const task = scheduler(async () => {
-    return 42;
-    }, 5);
 
-task.promise
-    .then((res: any) => console.log("done:", res))
-    .catch((err: any) => console.error("failed:", err));
+    // Example usage of the scheduler function
+//     const task = scheduler(async () => {
+//     return 42;
+//     }, 5);
 
-// לבטל לפני הריצה:
-// const cancelled = task.cancel();
-// console.log("cancelled?", cancelled);
+// task.promise
+//     .then((res: any) => console.log("done:", res))
+//     .catch((err: any) => console.error("failed:", err));
+
+// Example usage of the queue
+
+const q = new Queue<number>();
+q.enqueue(10);
+q.enqueue(20);
+console.log(q.dequeue()); // 10
+console.log(q.peek());    // 20
+console.log(q.toArray()); // [20]
+
+const mixedQueue = new Queue(); // number | string
+mixedQueue.enqueue(7);
+mixedQueue.enqueue("hello");
+mixedQueue.enqueue("world");
+mixedQueue.enqueue(100);
+console.log(mixedQueue.toArray()); // [7, "hello", "world", 100]
 

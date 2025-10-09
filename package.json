@@ -10,7 +10,7 @@
     "config": "node config.js",
     "config:dev": "node -r dotenv/config config.js",
     "dev": "tsx watch src/config.ts",
-    "start:ts": "tsx src/config.ts",
+    "start:ts": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/config.js"
   },
