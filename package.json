@@ -1,22 +1,18 @@
 {
   "name": "newnodeproject",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "config": "node config.js",
-    "config:dev": "node -r dotenv/config config.js",
-    "dev": "tsx watch src/config.ts",
-    "start:ts": "tsx src/index.ts",
+    "start": "tsx scheduler/index.ts",
+    "start:scheduler": "tsx scheduler/index.ts",
+    "start:queue": "tsx queue/index.ts",
+    "start:dates": "vitest run dates/dates.test.ts",
+    "dev:scheduler": "tsx watch scheduler/index.ts",
+    "dev:queue": "tsx watch queue/index.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/config.js"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "date-fns": "^4.1.0",
     "luxon": "^3.7.2",
@@ -27,14 +23,14 @@
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.20",
     "@types/luxon": "^3.7.1",
-    "@types/node": "^24.5.2",
+    "@types/node": "^24.9.1",
     "@types/node-schedule": "^2.1.8",
     "@vitest/coverage-v8": "^3.2.4",
     "dotenv": "^16.4.5",
     "jest": "^30.2.0",
     "ts-jest": "^29.4.4",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   }
 }
